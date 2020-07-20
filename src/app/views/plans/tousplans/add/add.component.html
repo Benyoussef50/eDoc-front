@@ -1,0 +1,166 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="card" [formGroup]="userForm">
+                <div class="card-header">
+                    <i class="fa fa-edit"></i>
+                    <ng-container>Ajout d'un nouveau Plan</ng-container>
+                </div>
+                <div class="card-body">
+                    <h4>Titres</h4>
+                    <div class="form-group">
+                        <label class="form-col-form-label">Titre</label>
+                        <input formControlName="bgcp_titre1" class="form-control" [class.is-invalid]="submitted">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-col-form-label">Libellé ind.</label>
+                        <input formControlName="bgcp_lib_indice" class="form-control" [class.is-invalid]="submitted">
+
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <h4>Codification (Numéro + indice)</h4>
+                    <div class="form-group">
+                        <label class="form-col-form-label">Affaire *</label>
+                        <!--    <input formControlName="lib1" class="form-control" [class.is-invalid]="submitted" id="input2"
+                            placeholder="Modification"> 
+                        <input formControlName="bgc_nom_affaire" class="form-control" [class.is-invalid]="submitted"> -->
+                        <select class="form-control" formControlName="bgc_nom_affaire" [class.is-invalid]="submitted">
+                            <option *ngFor="let state of refAffaire" [ngValue]="state.designation">
+                                {{ state.designation }}
+                            </option>
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Phase *</label>
+
+                            <select class="form-control" formControlName="spec_phase" [class.is-invalid]="submitted">
+                                <option *ngFor="let state of refPhase" [ngValue]="state.valeur">
+                                    {{state.valeur}} - {{state.designation}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">Le Libellé ind est obligatoire</div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label"><b>Emetteur *</b> </label>
+
+                            <select class="form-control" formControlName="spec_emetteur" [class.is-invalid]="submitted">
+                                <option *ngFor="let state of refEmetteur" [ngValue]="state.valeur">
+                                    {{state.valeur}} - {{state.designation}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Lot *</label>
+
+                            <select class="form-control" formControlName="spec_lot" [class.is-invalid]="submitted">
+                                <option *ngFor="let state of refLot" [ngValue]="state.valeur">
+                                    {{state.valeur}} - {{state.designation}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Niveau *</label>
+
+                            <select class="form-control" formControlName="spec_niveau" [class.is-invalid]="submitted">
+                                <option *ngFor="let state of refNiveau" [ngValue]="state.valeur">
+                                    {{state.valeur}} - {{state.designation}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Zone *</label>
+
+                            <select class="form-control" formControlName="spec_zone" [class.is-invalid]="submitted">
+                                <option *ngFor="let state of refZone" [ngValue]="state.valeur">
+                                    {{state.valeur}} - {{state.designation}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Type *</label>
+
+                            <select class="form-control" formControlName="spec_type" [class.is-invalid]="submitted">
+                                <option *ngFor="let state of refType" [ngValue]="state.valeur">
+                                    {{state.valeur}} - {{state.designation}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Co/nb *</label>
+
+                            <select class="form-control" formControlName="spec_conb" [class.is-invalid]="submitted">
+                                <option *ngFor="let state of refConb" [ngValue]="state.valeur">
+                                    {{state.valeur}} - {{state.designation}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Numero *</label>
+                            <input type="number" formControlName="spec_numero" class="form-control"
+                                [class.is-invalid]="submitted">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Indice</label>
+                            <input formControlName="bgcp_indice" class="form-control" [class.is-invalid]="submitted"
+                                id="input1">
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                    </div>
+                    <h4>Informations complémentaires</h4>
+                    <div class="form-group row">
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Date ind.</label>
+                            <input formControlName="bgcp_date_indice_" class="form-control" id="date-input" type="date"
+                                name="date-input1">
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Statut</label>
+                            <input type="number" formControlName="bgcp_statut" class="form-control"
+                                [class.is-invalid]="submitted">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-col-form-label">Crée le</label>
+                            <input class="form-control" formControlName="bgcp_date_reel_emission" type="date"
+                                name="date-input2">
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                    </div>
+                    <h4>Fichiers à télécharger</h4>
+                    <div class="form-group row">
+                        <input formControlName="file" id="file" type="file" class="form-control"
+                            (change)="onFileChange($event)" multiple>
+                        <!--    <input formControlName="file" id="file" type="file" class="form-control"
+                            (change)="onFileChange($event)"> -->
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" (click)="add()" class="btn" [disabled]="!userForm.valid"
+                        [class.btn-primary]="true"><i class="fa fa-check"></i>
+                        <ng-container>Créer</ng-container>
+                    </button> &nbsp;
+                    <button (click)="backClicked()" type="submit" class="btn btn-default">
+                        <i class="fa fa-times"></i> Annuler</button>
+                    <!--    <button type="button" (click)="test()"  class="btn btn-danger">
+                        Test</button>-->
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

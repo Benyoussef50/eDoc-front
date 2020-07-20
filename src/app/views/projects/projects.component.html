@@ -1,0 +1,137 @@
+<app-header [navbarBrandRouterLink]="['/dashboard']" [fixed]="true"
+    [navbarBrandFull]="{src: 'assets/img/brand/logo.svg', width: 150, height: 50, alt: 'CoreUI Logo'}"
+    [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
+    [sidebarToggler]="'lg'" [asideMenuToggler]="'lg'">
+
+    <ul class="nav navbar-nav ml-auto">
+        <!--  <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"><i class="icon-bell"></i><span class="badge badge-pill badge-danger">5</span></a>
+    </li>
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"><i class="icon-list"></i></a>
+    </li>
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"><i class="icon-location-pin"></i></a>
+    </li>
+-->
+        <li class="nav-item dropdown" dropdown placement="bottom right">
+            <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+                dropdownToggle (click)="false">
+                <img src="{{avatar}}" class="img-avatar" />
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                <div class="dropdown-header text-center"><strong>Account</strong></div>
+
+                <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
+                <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i>Settings</a>
+                <div class="divider"></div>
+
+                <a class="dropdown-item" href="#" (click)="logout()"><i class="fa fa-lock"></i>Se déconnecter</a>
+            </div>
+        </li>
+    </ul>
+</app-header>
+<div class="app-body">
+    <main class="main">
+        <cui-breadcrumb>
+
+        </cui-breadcrumb>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="icon-briefcase"></i> Liste des chantiers
+                        </div>
+                        <div class="card-body">
+
+                            <!--   <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Nom du projet</th>
+                            <th>Code Edifice</th>
+                            <th>Code du projet</th>
+                            <th>Unité opérationnelle</th>
+                            <th>Crée le</th>
+                            <th>Crée par</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let chantier of chantiers; let i=index;" (click)="RowSelected();">
+                            <td>
+                                <div>{{chantier.nomchantier}}</div>
+                            </td>
+                            <td>
+                                <div>{{chantier.codeedifice}}</div>
+                            </td>
+                            <td>
+                                <div>{{chantier.codechantier}}</div>
+                            </td>
+                            <td>
+                                <div>{{chantier.uo}}</div>
+                            </td>
+                            <td>
+                                <div>{{chantier.datecreation}}</div>
+                            </td>
+                            <td>
+                                <div>{{chantier.ownername}}</div>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table> -->
+                            <p-table #dt [columns]="cols" [value]="chantiers" [paginator]="true" [rows]="15"
+                                selectionMode="single" [(selection)]="selectedChantier">
+                                <ng-template pTemplate="caption">
+
+                                    <div class="ui-table-globalfilter-container">
+                                        <input pInputText type="text"
+                                            (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                            placeholder="Recherche partout" style="width:200px" />
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th *ngFor="let col of columns" pTooltip="Tri" tooltipPosition="top"
+                                            pSortableColumn="{{col.field}}">
+                                            {{col.header}}
+                                            <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                    <tr>
+
+                                        <th *ngFor="let col of columns">
+                                            <input class="form-control form-control-sm" pInputText type="text"
+                                                (input)="dt.filter($event.target.value, col.field, 'contains')">
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-chans>
+                                    <tr [pSelectableRow]="rowData">
+
+                                        <td *ngFor="let col of cols">
+                                            {{chans[col.field]}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                        <div class="card-footer">
+
+                            <button [disabled]="!selectedChantier" (click)="RowSelected()" type="submit"
+                                class="btn btn-primary"><i class="icon-user-follow"></i>Ouvrir</button>
+
+                            <div class="float-right">
+                                <button type="submit" class="btn btn-danger" (click)="logout()">
+                                    <i class="icon-logout"></i>Annuler</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!--/.col-->
+            </div>
+        </div>
+    </main>
+</div>

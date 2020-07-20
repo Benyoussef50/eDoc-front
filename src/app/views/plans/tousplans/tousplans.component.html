@@ -1,0 +1,350 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="icon-map"></i> Plans
+                <div class="card-header-actions">
+                    <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                        <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" (ngModelChange)="_dataChanged($event)" btnRadio="All" id="option1">All</label>
+                        <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" (ngModelChange)="_dataChanged($event)" btnRadio="Semaine" id="option2">Week</label>
+                        <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" (ngModelChange)="_dataChanged($event)" btnRadio="Jour" id="option3">Day</label>
+                      </div>
+                  </div>
+            </div>
+            <div class="card-body" #mydiv>
+                <!--/.col-->
+                <p-table #dt [value]="tousPlans" [loading]="loading" [columns]="cols" scrollHeight="350px"
+                    [scrollable]="true" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="10"
+                    [(selection)]="selectedPlan" [(contextMenuSelection)]="ContextPlan" selectionMode="single"
+                    [rowsPerPageOptions]="[10,15,20]" [contextMenu]="cm">
+                    <!-- Recherche Partout-->
+                    <ng-template pTemplate="caption">
+                        <div class="ui-helper-clearfix" style="text-align: left">
+                        </div>
+                        <div class="ui-table-globalfilter-container">
+                            
+                            <button type="button" pButton icon="pi pi-file-o" iconPos="left" label="CSV"
+                                (click)="dt.exportCSV()" style="margin-right: 0.5em; float:left;"></button>
+                            <button type="button" pButton icon="pi pi-file-excel" iconPos="left" label="EXCEL"
+                                (click)="exportExcel()" style="margin-right: 0.5em; float:left;"
+                                class="ui-button-warning"></button>
+                                <button type="button" pButton icon="pi pi-shopping-cart" iconPos="left" label="Mon panier"
+                                style="margin-right: 0.5em; float:left;"
+                               class="ui-button-warning"></button>
+                               <div style="text-align: right">
+                               <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                placeholder="Global Search" style="width:200px;"/>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <!-- Noms des champs-->
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th style="width:50px"></th>
+                            <th style="width:50px">V</th>
+                            <th *ngFor="let col of columns" tooltipPosition="top" pSortableColumn="{{col.field}}"
+                                style="width:200px">
+                                {{col.header}}
+                                <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                            </th>
+                        </tr>
+                        <!-- Inputs de Recherche
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th *ngFor="let col of columns">
+                                <input class="form-control form-control-sm" pInputText type="text"
+                                    (input)="dt.filter($event.target.value, col.field, 'contains')">
+                            </th>
+                        </tr>-->
+                    </ng-template> 
+                    <!-- Data-->
+                    <ng-template pTemplate="body" let-chans>
+                        <tr [pContextMenuRow]="chans">
+                            <td style="width:50px">
+                                <p-tableRadioButton [value]="chans">
+                                </p-tableRadioButton>
+                            </td>
+                            <td style="width:50px">
+                                <button type="button" [hidden]="!chans.content.length"
+                                    (click)="showMaximizableDialog(chans)" class="btn btn-sm btn-primary"
+                                    pTooltip="Ouvrir le plan" tooltipPosition="top">
+                                    <i class="fa fa-search text-white"></i>
+                                </button>
+                                <p-dialog [header]="titrePlan" [(visible)]="displayMaximizable"
+                                    [style]="{width: '50vw'}" [maximizable]="true" [modal]="false" appendTo="body">
+                                    <!--    <pdf-viewer [src]="pdfSrc" [render-text]="true" style="display: block;width:100%;height:80vh;">
+                                    </pdf-viewer> 
+                                    <ngx-doc-viewer [url]="pdfSrc" viewer="url" style="width:100%;height:80vh;"></ngx-doc-viewer>-->
+                                    <ngx-doc-viewer [url]="pdfSrc" viewer="url" style="width:100%;height:80vh;">
+                                    </ngx-doc-viewer>
+                                    <p-footer>
+                                        <button type="button" pButton icon="pi pi-check"
+                                            (click)="displayMaximizable=false;" label="Ok"></button>
+                                    </p-footer>
+                                </p-dialog>
+                            </td>
+                            <td *ngFor="let col of cols" style="width:200px">
+                                {{chans[col.field]}}
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <p-contextMenu #cm [model]="items"></p-contextMenu>
+                <p-accordion (onClose)="onTabClose($event)" [(activeIndex)]="index" [hidden]="!pdfSrc">
+                    <p-accordionTab [header]="titrePlan" [selected]="false">
+                        <ngx-doc-viewer [url]="pdfSrc" viewer="url" style="width:100%;height:80vh;">
+                        </ngx-doc-viewer>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
+            <div class="card-footer">
+                <button routerLink="/plans/add" type="submit" class="btn btn-primary"><i class="pi pi-plus-circle"></i>
+                    Nouveau</button>
+                <!--   <button type="button" (click)="test()" class="btn btn-danger">
+                    Test</button>
+            <pdf-viewer [src]="pdfSrc" [render-text]="true" style="display: block;"></pdf-viewer>
+                 <pdf-viewer id="pdf-report-id" class="pdf-container" [src]="pdfSrc" [original-size]="false"
+                    [fit-to-page]="true" [render-text]="true" [zoom]="1"
+                    >
+                    </pdf-viewer>
+
+                           <div class="col-lg-12" style="height: 680px;"><object #pdfViewer type="application/pdf" width="100%"
+                        height="100%"></object></div>       
+                -->
+            </div>
+        </div>
+        <div class="card" [hidden]="!selectedPlan">
+            <div class="card-body">
+                <p-tabView>
+                    <p-tabPanel header="Diffusions" leftIcon="pi pi-fw pi-comments">
+                        <p-table #dtd [value]="diffusions" [columns]="colDiff">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" tooltipPosition="top"
+                                        pSortableColumn="{{col.field}}" style="width:200px">
+                                        {{col.header}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-chansFiles>
+                                <tr>
+                                    <td *ngFor="let col of colFiles" style="width:200px">
+                                        {{chansFiles[col.field]}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+                    <p-tabPanel header="Tâches" leftIcon="pi pi-fw pi-check-circle">
+                        <p-table #dtt [value]="Taches" [columns]="colTaches">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" tooltipPosition="top"
+                                        pSortableColumn="{{col.field}}">
+                                        {{col.header}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-chansFiles>
+                                <tr>
+                                    <td *ngFor="let col of colFiles">
+                                        {{chansFiles[col.field]}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+                    <p-tabPanel header="Bordereaux" leftIcon="pi pi-fw pi-home">
+                        <p-table #dtb [value]="Bordereaux" [columns]="colBord">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" tooltipPosition="top"
+                                        pSortableColumn="{{col.field}}">
+                                        {{col.header}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-chansFiles>
+                                <tr>
+                                    <td *ngFor="let col of colFiles">
+                                        {{chansFiles[col.field]}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+                    <p-tabPanel header="Propriétés" leftIcon="pi pi-fw pi-info" [selected]="true">
+                        <form [formGroup]="userForm">
+                            <div class="form-group row">
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+
+                                        <input type="text" formControlName="bgcp_titre1" class="form-control"
+                                            placeholder="Titre">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+
+                                        <input type="text" formControlName="bgcp_lib_indice" class="form-control"
+                                            placeholder="Lib. ind." autocomplete="email">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="bgc_nom_affaire"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refAffaire" [ngValue]="state.designation">
+                                                {{ state.designation }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="spec_phase"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refPhase" [ngValue]="state.valeur">
+                                                {{state.valeur}} - {{state.designation}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="spec_emetteur"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refEmetteur" [ngValue]="state.valeur">
+                                                {{state.valeur}} - {{state.designation}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="spec_lot"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refLot" [ngValue]="state.valeur">
+                                                {{state.valeur}} - {{state.designation}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="spec_niveau"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refNiveau" [ngValue]="state.valeur">
+                                                {{state.valeur}} - {{state.designation}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="spec_zone"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refZone" [ngValue]="state.valeur">
+                                                {{state.valeur}} - {{state.designation}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="spec_type"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refType" [ngValue]="state.valeur">
+                                                {{state.valeur}} - {{state.designation}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+                                        <select class="form-control" formControlName="spec_conb"
+                                            [class.is-invalid]="submitted">
+                                            <option *ngFor="let state of refConb" [ngValue]="state.valeur">
+                                                {{state.valeur}} - {{state.designation}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+
+                                        <input type="number" formControlName="spec_numero" class="form-control"
+                                            placeholder="Numero" autocomplete="email">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+
+                                        <input type="text" formControlName="bgcp_indice" class="form-control"
+                                            placeholder="Indice" autocomplete="current-password">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+
+                                        <input type="date" formControlName="bgcp_date_indice_" class="form-control"
+                                            placeholder="Date ind.">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+
+                                        <input type="number" formControlName="bgcp_statut" class="form-control"
+                                            placeholder="Statut" autocomplete="email">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <div class="input-group">
+
+                                        <input type="date" formControlName="bgcp_date_reel_emission"
+                                            class="form-control" placeholder="Crée le" autocomplete="current-password">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group form-actions">
+                                <button type="submit" (click)="enregistrer()" [disabled]="!userForm.valid"
+                                    class="btn btn-sm btn-success">Enregistrer</button>
+                            </div>
+                        </form>
+                    </p-tabPanel>
+                    <p-tabPanel header="Fichiers" leftIcon="pi pi-fw pi-file">
+                        <p-table #dtf [value]="files" [columns]="colFiles">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th style="width:50px">D</th>
+                                    <th *ngFor="let col of columns" tooltipPosition="top"
+                                        pSortableColumn="{{col.field}}" style="width:200px">
+                                        {{col.header}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-chansFiles>
+                                <tr>
+                                    <td style="width:50px">
+                                        <button type="button" (click)="Download(chansFiles)"
+                                            class="btn btn-sm btn-primary" pTooltip="Télecharger le document"
+                                            tooltipPosition="top">
+                                            <i class="fa fa-download text-white"></i>
+                                        </button>
+                                    </td>
+                                    <td *ngFor="let col of colFiles" style="width:200px">
+                                        {{chansFiles[col.field]}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </div>
+    <!--/.col-->
+</div>
